@@ -6,14 +6,17 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
+# Creates the Users table
 class Users(Base):
     __tablename__= 'users'
 
+    # The email and picture will be pulled from the google signin through OAuth
     id = Column(Integer, primary_key = True)
     name = Column(String(80), nullable = False)
     email = Column(String(250), nullable = False)
     picture = Column(String(250))
 
+    # method for API endpoint
     @property
     def serialize(self):
         return {
@@ -27,11 +30,14 @@ class Users(Base):
 class Brewery(Base):
     __tablename__ = 'brewery'
 
+    # This uses the user id as a ForeignKey to allow people to update/delete
+    # items that they created.
     id = Column(Integer, primary_key = True)
     name = Column(String(80), nullable = False)
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship(Users)
 
+    # method for API endpoint
     @property
     def serialize():
         return {
@@ -42,6 +48,9 @@ class Brewery(Base):
 class Beer(Base):
     __tablename__ = 'beer'
 
+    # This uses the user id as a ForeignKey to allow people to update/delete
+    # items that they created. This uses the brewery id as a ForeignKey to
+    # identify which brewery it belongs to.
     id = Column(Integer, primary_key = True)
     name = Column(String(80), nullable = False)
     description = Column(String(250))
@@ -51,6 +60,7 @@ class Beer(Base):
     brewery_id = Column(Integer, ForeignKey('brewery.id'))
     brewery = relationship(Brewery)
 
+    # method for API endpoint
     @property
     def serialize():
         return {
