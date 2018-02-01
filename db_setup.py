@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
-from slqalchemy.ext.declarative import declarative_base
-from sqlalcemy.orm import relationship
-from slqalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from sqlalchemy import create_engine
 
 
 Base = declarative_base()
@@ -29,7 +29,7 @@ class Brewery(Base):
 
     id = Column(Integer, primary_key = True)
     name = Column(String(80), nullable = False)
-    user_id = Column(Integer, ForeignKey('users'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship(Users)
 
     @property
@@ -46,9 +46,9 @@ class Beer(Base):
     name = Column(String(80), nullable = False)
     description = Column(String(250))
     style = Column(String(80))
-    user_id = Column(Integer, ForeignKey('users'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship(Users)
-    brewery_id = Column(Integer, ForeignKey('brewery'))
+    brewery_id = Column(Integer, ForeignKey('brewery.id'))
     brewery = relationship(Brewery)
 
     @property
