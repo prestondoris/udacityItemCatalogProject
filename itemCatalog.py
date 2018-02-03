@@ -2,6 +2,12 @@ from flask import Flask, render_template, url_for, request, redirect, flash, jso
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db_setup import Base, Users, Brewery, Beer
+from flask import session as login_session
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2, json, random, string, requests
+from flask import make_response
+
 
 engine = create_engine('sqlite:///brewerycatalog.db')
 Base.metadata.bind = engine
@@ -10,12 +16,33 @@ session = DBSession()
 
 app = Flask(__name__)
 
+CLIENT_ID = json.loads(
+    open('client_secret.json', 'r').read())['web']['client_id']
 
 @app.route('/')
 @app.route('/login')
 def login():
-    return '''This is the landing page where users can login. Any change
-        requests to items in the DB will be redirected to this page.'''
+    # This is creating a randomized 32 character string that is unique for each
+    # page load. This will be used to confirm that a user is actually a user
+    # that there is not an Request attack taking place.
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+                    
+    login_session['state'] = state
+    # return "The current session state is %s" % login_session['state']
+    return render_template('login.html', STATE=state)
+
+
+@app.route('/gconnect', methods = ['POST'])
+def googleSignin():
+    # Validate State token created when user vistis login page. This token is
+    # stored in login_session under the 'state' key. This will prevent
+    # Anti-Forgery Request Attacks
+    if request.args.get('state') != login_session['state']:
+        serv_resp = make_response(json.dumps({'Invaild state parameter'}), 401)
+        serv_resp.headers['Content-Type'] = 'application/json'
+        return response
+    auth_code = request.data
 
 
 @app.route('/breweries')
