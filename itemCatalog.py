@@ -25,12 +25,16 @@ def login():
     # This is creating a randomized 32 character string that is unique for each
     # page load. This will be used to confirm that a user is actually a user
     # that there is not an Request attack taking place.
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in xrange(32))
-                    
-    login_session['state'] = state
-    # return "The current session state is %s" % login_session['state']
-    return render_template('login.html', STATE=state)
+    if 'name' not in login_session:
+        state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                        for x in xrange(32))
+
+        login_session['state'] = state
+        # return "The current session state is %s" % login_session['state']
+        return render_template('login.html', STATE=state)
+    else:
+        return redirect(url_for('breweries'))
+
 
 
 @app.route('/gconnect', methods = ['POST'])
@@ -39,15 +43,156 @@ def googleSignin():
     # stored in login_session under the 'state' key. This will prevent
     # Anti-Forgery Request Attacks
     if request.args.get('state') != login_session['state']:
-        serv_resp = make_response(json.dumps({'Invaild state parameter'}), 401)
+        serv_resp = make_response(json.dumps('Invaild state parameter'), 401)
         serv_resp.headers['Content-Type'] = 'application/json'
-        return response
+        return serv_resp
+
+    # Obtain authorization code from Google. This was sent to us by from the
+    # AJAX POST request. We will use this auth_code to reach out to Google to
+    # receive an access token which allows the server to make its own API calls.
     auth_code = request.data
+
+    # Exchange the auth_code for credential tokens object. We will create a
+    # try/except statement to account for potential errors allong the way.
+    try:
+        oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
+        oauth_flow.redirect_uri = 'postmessage'
+        # This credentials object is the data that we exchanged our
+        # auth_code for
+        credentials = oauth_flow.step2_exchange(auth_code)
+    except FlowExchangeError:
+        response = make_response(
+            json.dumps('Failed to upgrade the authorization code.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Verify that the access token is valid
+    access_token = credentials.access_token
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
+        % access_token)
+    print url
+    h = httplib2.Http()
+    result = json.loads(h.request(url, 'GET')[1])
+    if result.get('error') is not None:
+        response = make_response(json.dumps(result.get('error')), 500)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Verify that the access token is valid for this intended user.
+    goog_id = credentials.id_token['sub']
+    if result['user_id'] != goog_id:
+        response = make_response(json.dumps(
+            "Token's user ID doesn't match given user ID."), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Verify that the access token is valid for this app.
+    if result['issued_to'] != CLIENT_ID:
+        response = make_response(json.dumps(
+            "Token's client ID does not match app's."), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Check to see if a user is already logged in.
+    stored_access_token = login_session.get('access_token')
+    print stored_access_token
+    stored_goog_id = login_session.get('goog_id')
+    if stored_access_token is not None and goog_id == stored_goog_id:
+        response = make_response(json.dumps('Current user is already connected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    login_session['access_token'] = access_token
+    login_session['goog_id'] = goog_id
+
+    # Get User info
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {'access_token': credentials.access_token, 'alt': 'json'}
+    answer = requests.get(userinfo_url, params=params)
+
+    data = answer.json()
+
+    login_session['name'] = data['name']
+    login_session['picture'] = data['picture']
+    login_session['email'] = data['email']
+
+    # See if a user exists, if it doesn't make a new one
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
+    output = ''
+    output += '<h1>Welcome, '
+    output += login_session['name']
+    output += '!</h1>'
+    output += '<img src="'
+    output += login_session['picture']
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    flash("you are now logged in as %s" % login_session['name'])
+    print "done!"
+    return output
+
+
+@app.route('/glogout')
+def googleLogout():
+    # Only disconnect a connected user
+    access_token = login_session['access_token']
+    print access_token
+    if access_token is None:
+        response = make_response(json.dumps(
+            'Current user not connected'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+
+    if result['status'] == '200':
+        del login_session['access_token']
+        del login_session['goog_id']
+        del login_session['name']
+        del login_session['email']
+        del login_session['picture']
+
+        response = make_response(json.dumps(
+            'Successfully discconnected'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        response = make_response(json.dumps(
+            'Failed to revoke token for a given user.'), 400)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+
+def createUser(login_session):
+    newUser = Users(name=login_session['name'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(Users).filter_by(email=login_session['email']).one()
+    return user.id
+
+def getUserInfo(user_id):
+    user = session.query(Users).filter_by(id=user_id).one()
+    return user
+
+def getUserID(email):
+    try:
+        user = session.query(Users).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 
 @app.route('/breweries')
 def breweries():
-    return 'This is the page that lists all the breweries in the catalog'
+    brewery = session.query(Brewery).all()
+    if 'name' not in login_session:
+        return None
+    else:
+        return render_template('breweries.html', brewery = brewery)
 
 
 @app.route('/breweries/<int:id>/update')
