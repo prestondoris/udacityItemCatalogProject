@@ -19,7 +19,7 @@ app = Flask(__name__)
 CLIENT_ID = json.loads(
     open('client_secret.json', 'r').read())['web']['client_id']
 
-@app.route('/')
+
 @app.route('/login')
 def login():
     # This is creating a randomized 32 character string that is unique for each
@@ -185,14 +185,16 @@ def getUserID(email):
     except:
         return None
 
-
+@app.route('/')
 @app.route('/breweries')
 def breweries():
     brewery = session.query(Brewery).all()
     if 'name' not in login_session:
-        return None
+        user = None
+        return render_template('breweries.html', brewery = brewery, user = user)
     else:
-        return render_template('breweries.html', brewery = brewery)
+        user = getUserInfo(getUserID(login_session['email']))
+        return render_template('breweries.html', brewery = brewery, user = user)
 
 
 @app.route('/breweries/<int:id>/update')

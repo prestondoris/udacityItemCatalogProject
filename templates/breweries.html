@@ -1,5 +1,6 @@
 {% extends "main.html" %}
 {% block content %}
+{% include "nav.html" %}
 
     {% for i in brewery %}
     <a href="#">
@@ -8,6 +9,5 @@
         </article>
     </a>
     {% endfor %}
-    <a href="{{ url_for('googleLogout') }}">Logout</a>
 
 {% endblock %}

@@ -18,13 +18,11 @@
     </div>
     <div id="result"></div>
     <script>
-    alert("connected to google sign-in script");
 
     function signInCallback(authResult) {
         if (authResult['code']) {
             // Hide the sign-in button now that the user is authorized
             $('#signinButton').attr('style', 'display:none');
-            alert(authResult['code'])
 
             /* Send a POST request to our server with the one time access code that
                Google supplied to the user. If our server responds OK then we will

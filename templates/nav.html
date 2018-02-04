@@ -1,0 +1,10 @@
+<nav class="nav">
+    <a href="#">Brewery Catalog</a>
+    {% if user is none %}
+        <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i></a>
+    {% else %}
+        <span>{{ user.name }}</span>
+        <img src="{{ user.picture }}" style="width: 100px; height: 100px; border-radius: 50%"></img>
+        <a href="{{ url_for('googleLogout') }}"><i class="fas fa-sign-out-alt"></i></a>
+    {% endif %}
+</nav>
