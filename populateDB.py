@@ -18,16 +18,40 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-# Add Original User
+
+# Delete all items in the Brewery table
+allBreweries = session.query(Brewery).all()
+for brewery in allBreweries:
+    session.delete(brewery)
+    session.commit()
+
+# Delete all items in Beers table
+allBeers = session.query(Beer).all()
+for beer in allBeers:
+    session.delete(beer)
+    session.commit()
+
+# Delete all items in the Users table
+allUsers = session.query(Users).all()
+for users in allUsers:
+    session.delete(users)
+    session.commit()
+
+
+originalUser = Users(name='Preston Doris',
+    email = 'prestondoris@gmail.com',
+    picture='https://lh4.googleusercontent.com/-Hs9d2xbVGlA/AAAAAAAAAAI/AAAAAAAAAFw/CO3e-KX2o5Y/photo.jpg')
+session.add(originalUser)
+session.commit()
 
 
 # Add Breweries to the DB
 # Brewery 1
-brewery1 = Brewery(name='21st Amendment Brewery')
+brewery1 = Brewery(name='21st Amendment Brewery', user_id=1)
 session.add(brewery1)
 session.commit()
 # Brewery 1 Beers
-beer1 = Beer(
+b1beer1 = Beer(
     name = 'Brew Free! or Die IPA',
     description = '''BREW FREE! OR DIE IPA is brewed with some serious west
         coast attitude. This aromatic golden IPA starts with three different
@@ -35,12 +59,13 @@ beer1 = Beer(
         the firm bitterness. Our top selling beer at the pub, this IPA starts
         big and finishes clean leaving you wanting more.''',
     style = 'IPA',
-    brewery = brewery1
+    brewery = brewery1,
+    user_id=1
 )
-session.add(beer1)
+session.add(b1beer1)
 session.commit()
 
-beer2 = Beer(
+b1beer2 = Beer(
     name = 'Blah Blah Blah Imperial IPA',
     description = '''We are huge fans of IPA and love our hops like anyone else,
         but we also like to have fun. Our Blah Blah Blah IPA is a
@@ -48,12 +73,13 @@ beer2 = Beer(
         sub-styles that have become part of craft beer conversations and
         offerings.''',
     style = 'IPA',
-    brewery = brewery1
+    brewery = brewery1,
+    user_id=1
 )
-session.add(beer2)
+session.add(b1beer2)
 session.commit()
 
-beer3 = Beer(
+b1beer3 = Beer(
     name = 'Hell or High Watermelon Wheat',
     description = '''Like Lady Liberty, we stand for independence and
             perseverance. In the pursuit of innovative beer, there is no
@@ -62,16 +88,17 @@ beer3 = Beer(
             flavor that's surprisingly crisp, dry and refreshing summer
             in a can.''',
     style = 'Wheat Beer',
-    brewery = brewery1
+    brewery = brewery1,
+    user_id=1
 )
-session.add(beer3)
+session.add(b1beer3)
 session.commit()
 
-brewery2 = Brewery(name='Sierra Nevada')
+brewery2 = Brewery(name='Sierra Nevada', user_id=1)
 session.add(brewery2)
 session.commit()
 # Brewery 2 Beers
-beer1 = Beer(
+b2beer1 = Beer(
     name = 'Pale Ale',
     description = '''Pale Ale began as a home brewer's dream, grew into an icon,
         and inspired countless brewers to follow a passion of their own. Its
@@ -81,10 +108,13 @@ beer1 = Beer(
         beer drinkers every day. It is all natural, bottle conditioned and
         refreshingly bold. ''',
     style = 'Pale Ale',
-    brewery = brewery2
+    brewery = brewery2,
+    user_id=1
 )
+session.add(b2beer1)
+session.commit()
 
-beer2 = Beer(
+b2beer2 = Beer(
     name = 'Torpedo IPA',
     description = '''Sierra Nevada and hops go hand in hand. What began as a
         crazy idea scribbled in a pub eventually became our newest year-round
@@ -94,10 +124,13 @@ beer2 = Beer(
         Torpedo Extra IPA is an aggressive yet balanced beer with massive hop
         aromas of citrus, pine, and tropical fruit.''',
     style = 'IPA',
-    brewery = brewery2
+    brewery = brewery2,
+    user_id=1
 )
+session.add(b2beer2)
+session.commit()
 
-beer1 = Beer(
+b2beer3 = Beer(
     name = 'Stout',
     description = '''Before Sierra Nevada was a reality, our founders brewed
     beer at home and dreamed of building a brewery one day. Back then, they
@@ -109,40 +142,52 @@ beer1 = Beer(
     rich, bold, black as night and filled with the wild-eyed passion of which
     dreams are made.''',
     style = 'Stout',
-    brewery = brewery2
+    brewery = brewery2,
+    user_id=1
 )
+session.add(b2beer3)
+session.commit()
 
 
-brewery3 = Brewery(name='Faction')
+brewery3 = Brewery(name='Faction', user_id=1)
 session.add(brewery3)
 session.commit()
 # Brewery 3 beers
-beer1 = Beer(
+b3beer1 = Beer(
     name = 'Pale Ale',
     description = 'Year-round pale ale generously hopped with Simcoe, Columbus and Mosaic',
     style = 'Pale Ale',
-    brewery = brewery3
+    brewery = brewery3,
+    user_id=1
 )
+session.add(b3beer1)
+session.commit()
 
-beer2 = Beer(
+b3beer2 = Beer(
     name = 'A-Town Pale',
     description = 'American style Pale Ale hopped with Cascade,Simcoe and Centennial. Only available in Alameda',
     style = 'Pale Ale',
-    brewery = brewery3
+    brewery = brewery3,
+    user_id=1
 )
+session.add(b3beer2)
+session.commit()
 
-beer1 = Beer(
+b3beer3 = Beer(
     name = 'McCrary Pale- Maiden Voyage ',
     description = 'Pale ale brewed with Admiral Maltings Maiden Voyage malt ',
     style = 'Pale Ale',
-    brewery = brewery3
+    brewery = brewery3,
+    user_id=1
 )
+session.add(b3beer3)
+session.commit()
 
-brewery4 = Brewery(name='Stone')
+brewery4 = Brewery(name='Stone', user_id=1)
 session.add(brewery4)
 session.commit()
 # Brewery 4 beers
-beer1 = Beer(
+b4beer1 = Beer(
     name = 'IPA',
     description = '''One of the most well-respected and best-selling IPAs
         in the country, this golden beauty explodes with tropical, citrusy,
@@ -150,10 +195,13 @@ beer1 = Beer(
         character. This crisp, extra hoppy brew is hugely refreshing on a hot
         day, but will always deliver no matter when you choose to drink it.''',
     style = 'IPA',
-    brewery = brewery4
+    brewery = brewery4,
+    user_id=1
 )
+session.add(b4beer1)
+session.commit()
 
-beer2 = Beer(
+b4beer2 = Beer(
     name = 'Ruination Double IPA',
     description = '''We employ dry hopping and hop bursting to squeeze every
         last drop of piney, citrusy, tropical essence from the hops that give
@@ -162,31 +210,40 @@ beer2 = Beer(
         that's evident in every sip. Join us in cheering this, the second stanza
         in our "Liquid Poem to the Glory of the Hop." ''',
     style = 'Double IPA',
-    brewery = brewery4
+    brewery = brewery4,
+    user_id=1
 )
+session.add(b4beer2)
+session.commit()
 
-beer1 = Beer(
+b4beer3 = Beer(
     name = 'Go To IPA',
     description = '''For Stone Go To IPA, we embrace our hop obsession in a new
         way, funneling an abundance of lupulin-borne bitterness into a session
         IPA that delivers all the fruity, piney character of a much
         bigger IPA. ''',
     style = 'Session IPA',
-    brewery = brewery4
+    brewery = brewery4,
+    user_id=1
 )
+session.add(b4beer3)
+session.commit()
 
-brewery5 = Brewery(name='Lagunitas')
+brewery5 = Brewery(name='Lagunitas', user_id=1)
 session.add(brewery5)
 session.commit()
 # Brewery 5 beers
-beer1 = Beer(
+b5beer1 = Beer(
     name = 'IPA',
     description = 'A well-rounded, highly drinkable IPA. A bit of Caramel Malt barley provides the richness that mellows out the twang of the hops.',
     style = 'IPA',
-    brewery = brewery5
+    brewery = brewery5,
+    user_id=1
 )
+session.add(b5beer1)
+session.commit()
 
-beer2 = Beer(
+b5beer2 = Beer(
     name = '12th of Never Ale',
     description = '''The magical, mystical 12th of Never is a blend of Old and
         New School hops that play bright citrus, rich coconut, and papaya-esque
@@ -196,15 +253,21 @@ beer2 = Beer(
         moderate voice. Pale, cold, slightly alcoholic and bitter.
         It's all we know.''',
     style = 'Pale Ale',
-    brewery = brewery5
+    brewery = brewery5,
+    user_id=1
 )
+session.add(b5beer2)
+session.commit()
 
-beer1 = Beer(
+b5beer3 = Beer(
     name = 'Pils',
     description = '''Our only Unlimited Lager, brewed with loads of imported
         Saaz hops and a bottom-fermenting yeast strain that leaves it Light and
         Crisp and Easy to Slam, yet full of real flavor and all the things
         you yearn for.''',
     style = 'Pilsner',
-    brewery = brewery5
+    brewery = brewery5,
+    user_id=1
 )
+session.add(b5beer3)
+session.commit()

@@ -95,7 +95,6 @@ def googleSignin():
 
     # Check to see if a user is already logged in.
     stored_access_token = login_session.get('access_token')
-    print stored_access_token
     stored_goog_id = login_session.get('goog_id')
     if stored_access_token is not None and goog_id == stored_goog_id:
         response = make_response(json.dumps('Current user is already connected.'), 200)
@@ -116,7 +115,7 @@ def googleSignin():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
-    # See if a user exists, if it doesn't make a new one
+    # See if a user exists in the DB, if it doesn't make a new one
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
@@ -126,6 +125,7 @@ def googleSignin():
     output += '<h1>Welcome, '
     output += login_session['name']
     output += '!</h1>'
+    output += login_session['picture']
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
@@ -197,13 +197,31 @@ def breweries():
         return render_template('breweries.html', brewery = brewery, user = user)
 
 
-@app.route('/breweries/<int:id>/update')
-def update_breweries(id):
-    return '''This is the page that allows a signed in user that created the
-        brewery to update and or delete given brewery in the database. They can
-        only edit or delete items that they created. They will not be able to
-        edit or delete any breweries that they did not create. If a user that
-        is not logged in wants to view this page they will not have access'''
+@app.route('/breweries/<int:brewery_id>/update')
+def update_breweries(brewery_id):
+    """Route to update a brewery.
+
+    This is the page that allows a signed in user that created the
+    brewery to update and or delete given brewery in the database. They can
+    only edit or delete items that they created. They will not be able to
+    edit or delete any breweries that they did not create. If a user that
+    is not logged in wants to view this page they will not have access
+
+    Args:
+        id: The id of the brewery
+
+    Returns:
+        Returns a rendered html template for updating and deleting a brewery
+
+    """
+
+    if 'name' not in login_session:
+        return None
+    else:
+        brewery = session.query(Brewery).filter_by(id = brewery_id).one()
+        user = getUserInfo(brewery.user_id)
+        return render_template('updateBrewery.html',
+            brewery = brewery, user = user)
 
 
 @app.route('/breweries/create')
