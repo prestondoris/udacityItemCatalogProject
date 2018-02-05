@@ -18,7 +18,7 @@
 
     {% for brewery in brewery %}
     <section>
-        <a href="#">
+        <a href="{{ url_for('beers', brewery_id = brewery.id) }}">
             <article>
                 {{ brewery.name }}
             </article>

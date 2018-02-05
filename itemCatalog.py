@@ -194,24 +194,25 @@ def breweries():
 
 @app.route('/breweries/update/<int:brewery_id>', methods = ['GET', 'POST'])
 def update_brewery(brewery_id):
-    """Route to update a brewery.
+    # Route to update a brewery.
+    #
+    # This is the page that allows a signed in user that created the
+    # brewery to update the given brewery in the database. They can
+    # only edit items that they created. They will not be able to
+    # edit any breweries that they did not create. If a user that
+    # is not logged in wants to view this page they will not have access
+    #
+    # Args:
+    #    id: The id of the brewery
+    #
+    # Returns:
+    #    GET Requests:
+    #        Returns a rendered html template for updating a
+    #        brewery
+    #    POST Requests:
+    #        Receives the form data to update the brewery in the database,
+    #        then returns a redirect to the main breweries page.
 
-    This is the page that allows a signed in user that created the
-    brewery to update and or delete given brewery in the database. They can
-    only edit or delete items that they created. They will not be able to
-    edit or delete any breweries that they did not create. If a user that
-    is not logged in wants to view this page they will not have access
-
-    Args:
-        id: The id of the brewery
-
-    Returns:
-        GET Requests:
-            Returns a rendered html template for updating and deleting a
-            brewery
-        POST Requests:
-
-    """
     brewery = session.query(Brewery).filter_by(id = brewery_id).one()
     if 'name' not in login_session:
         flash('''You cannot update this brewery because you are not the
@@ -238,6 +239,25 @@ def update_brewery(brewery_id):
 
 @app.route('/breweries/delete/<int:brewery_id>', methods = ['GET','POST'])
 def delete_brewery(brewery_id):
+    # Route to delete a brewery.
+    #
+    # This is the page that allows a signed in user that created the
+    # brewery to delete the given brewery in the database. They can
+    # only delete items that they created. They will not be able to
+    # delete any breweries that they did not create. If a user that
+    # is not logged in wants to view this page they will not have access
+    #
+    # Args:
+    #    id: The id of the brewery
+    #
+    # Returns:
+    #    GET Requests:
+    #        Returns a rendered html template for deleting a
+    #        brewery
+    #    POST Requests:
+    #        Receives the form data to delete the brewery from database, then
+    #        returns a redirect to the main breweries page.
+
     brewery = session.query(Brewery).filter_by(id = brewery_id).one()
     if 'name' not in login_session:
         flash('''You cannot delete this brewery because you are not the
@@ -263,20 +283,19 @@ def delete_brewery(brewery_id):
 
 @app.route('/breweries/create', methods = ['GET', 'POST'])
 def create_brewery():
-    """Route to create a new brewery
+    # Route to create a new brewery
+    #
+    # This is the page that allows a signed in user to create a new
+    # brewery in the database. If a user who is not signed in wants to create
+    # a new brewery they will be taken back to the login page.
+    #
+    # Args:
+    #    None
+    # Returns:
+    #    Returns a rendered html template for creating a new brewery
 
-    This is the page that allows a signed in user to create a new
-    brewery in the database. If a user who is not signed in wants to create
-    a new brewery they will be taken back to the login page.
-    Args:
-        None
-    Returns:
-        Returns a rendered html template for creating a new brewery
-
-    """
     if 'name' not in login_session:
-        user = None
-        return render_template('create_brewery.html', user=user)
+        return redirect(url_for('login'))
     else:
         user = getUserInfo(getUserID(login_session['email']))
         if request.method == 'POST':
@@ -290,26 +309,84 @@ def create_brewery():
 
 
 
-@app.route('/breweries/beers')
-def beers():
-    return '''This is the page that displays all the beers in the database for
-        a given brewery'''
+@app.route('/breweries/<int:brewery_id>/beers')
+def beers(brewery_id):
+    # Route to display all beers in the database for a given brewery.
+    #
+    brewery = session.query(Brewery).filter_by(id = brewery_id).one()
+    beers = session.query(Beer).filter_by(brewery_id = brewery.id).all()
+    print beers
+    if 'name' not in login_session:
+        user = None
+        return render_template('beers.html', beers = beers, user = user)
+    else:
+        user = getUserInfo(getUserID(login_session['email']))
+        return render_template('beers.html', brewery = brewery, beers = beers, user = user)
 
 
-@app.route('/breweries/beers/<int:id>/update')
-def update_beers(id):
-    return '''This is the page that allows a signed in user that created the
-        beer to update and or delete given beer in the database. They can
-        only edit or delete items that they created. They will not be able to
-        edit or delete any beers that they did not create. If a user that
-        is not logged in wants to view this page they will not have access'''
+@app.route('/breweries/<int:brewery_id>/beers/<int:beer_id>/update', methods = ['GET', 'POST'])
+def update_beer(brewery_id, beer_id):
+    #This is the page that allows a signed in user that created the
+    #    beer to update and or delete given beer in the database. They can
+    #    only edit or delete items that they created. They will not be able to
+    #    edit or delete any beers that they did not create. If a user that
+    #    is not logged in wants to view this page they will not have access
+
+    brewery = session.query(Brewery).filter_by(id = brewery_id).one()
+    beer = session.query(Beer).filter_by(id = beer_id).one()
+    if 'name' not in login_session:
+        return redirect(url_for('login'))
+    else:
+        creator = getUserInfo(brewery.user_id)
+        user = getUserInfo(getUserID(login_session['email']))
+        if user.id == creator.id:
+            if request.method == 'POST':
+                return None
+            else:
+                return render_template('update_beer.html',
+                    brewery = brewery, beer=beer, user = user)
+        else:
+            flash('''You cannot update this brewery because you are not the
+                creator. Only the person who created a Brewery can update it.''')
+            return redirect(url_for('breweries'))
 
 
-@app.route('/breweries/beers/create')
-def create_beer():
-    return '''This is the page that allows a signed in user to create a new
-        beer in the database. If a user who is not signed in wants to create
-        a new beer they will be taken back to the login page.'''
+@app.route('/breweries/<int:brewery_id>/beers/<int:beer_id>/delete')
+def delete_beer(brewery_id, beer_id):
+    brewery = session.query(Brewery).filter_by(id = brewery_id).one()
+    beer = session.query(Beer).filter_by(id = beer_id).one()
+    if 'name' not in login_session:
+        return redirect(url_for('login'))
+    else:
+        creator = getUserInfo(beer.user_id)
+        user = getUserInfo(getUserID(login_session['email']))
+        if user.id == creator.id:
+            if request.method == 'POST':
+                return None
+            else:
+                return render_template('delete_beer.html',
+                    brewery = brewery, beer=beer, user = user)
+        else:
+            flash('''You cannot delete this brewery because you are not the
+                creator. Only the person who created a Brewery can delete it.''')
+            return redirect(url_for('breweries'))
+
+
+@app.route('/breweries/<int:brewery_id>/beers/create')
+def create_beer(brewery_id):
+    # This is the page that allows a signed in user to create a new
+    #    beer in the database. If a user who is not signed in wants to create
+    #    a new beer they will be taken back to the login page.
+    brewery = session.query(Brewery).filter_by(id = brewery_id).one()
+    if 'name' not in login_session:
+        return redirect(url_for('login'))
+    else:
+        user = getUserInfo(getUserID(login_session['email']))
+        if request.method == 'POST':
+            return None
+        else:
+            return render_template('create_beer.html', brewery=brewery, user=user)
+
 
 
 def runApp():

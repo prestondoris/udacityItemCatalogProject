@@ -38,11 +38,11 @@ for users in allUsers:
     session.commit()
 
 
-#originalUser = Users(name='Preston Doris',
-#    email = 'prestondoris@gmail.com',
-#    picture='https://lh4.googleusercontent.com/-Hs9d2xbVGlA/AAAAAAAAAAI/AAAAAAAAAFw/CO3e-KX2o5Y/photo.jpg')
-#session.add(originalUser)
-#session.commit()
+originalUser = Users(name='Preston Doris',
+    email = 'prestondoris@gmail.com',
+    picture='https://lh4.googleusercontent.com/-Hs9d2xbVGlA/AAAAAAAAAAI/AAAAAAAAAFw/CO3e-KX2o5Y/photo.jpg')
+session.add(originalUser)
+session.commit()
 
 
 # Add Breweries to the DB
@@ -59,6 +59,7 @@ b1beer1 = Beer(
         the firm bitterness. Our top selling beer at the pub, this IPA starts
         big and finishes clean leaving you wanting more.''',
     style = 'IPA',
+    brewery_id = 1,
     brewery = brewery1,
     user_id=1
 )
@@ -73,6 +74,7 @@ b1beer2 = Beer(
         sub-styles that have become part of craft beer conversations and
         offerings.''',
     style = 'IPA',
+    brewery_id = 1,
     brewery = brewery1,
     user_id=1
 )
@@ -88,6 +90,7 @@ b1beer3 = Beer(
             flavor that's surprisingly crisp, dry and refreshing summer
             in a can.''',
     style = 'Wheat Beer',
+    brewery_id = 1,
     brewery = brewery1,
     user_id=1
 )
@@ -108,6 +111,7 @@ b2beer1 = Beer(
         beer drinkers every day. It is all natural, bottle conditioned and
         refreshingly bold. ''',
     style = 'Pale Ale',
+    brewery_id = 2,
     brewery = brewery2,
     user_id=1
 )
@@ -124,6 +128,7 @@ b2beer2 = Beer(
         Torpedo Extra IPA is an aggressive yet balanced beer with massive hop
         aromas of citrus, pine, and tropical fruit.''',
     style = 'IPA',
+    brewery_id = 2,
     brewery = brewery2,
     user_id=1
 )
@@ -142,6 +147,7 @@ b2beer3 = Beer(
     rich, bold, black as night and filled with the wild-eyed passion of which
     dreams are made.''',
     style = 'Stout',
+    brewery_id = 2,
     brewery = brewery2,
     user_id=1
 )
@@ -157,6 +163,7 @@ b3beer1 = Beer(
     name = 'Pale Ale',
     description = 'Year-round pale ale generously hopped with Simcoe, Columbus and Mosaic',
     style = 'Pale Ale',
+    brewery_id = 3,
     brewery = brewery3,
     user_id=1
 )
@@ -167,6 +174,7 @@ b3beer2 = Beer(
     name = 'A-Town Pale',
     description = 'American style Pale Ale hopped with Cascade,Simcoe and Centennial. Only available in Alameda',
     style = 'Pale Ale',
+    brewery_id = 3,
     brewery = brewery3,
     user_id=1
 )
@@ -177,6 +185,7 @@ b3beer3 = Beer(
     name = 'McCrary Pale- Maiden Voyage ',
     description = 'Pale ale brewed with Admiral Maltings Maiden Voyage malt ',
     style = 'Pale Ale',
+    brewery_id = 3,
     brewery = brewery3,
     user_id=1
 )
@@ -195,6 +204,7 @@ b4beer1 = Beer(
         character. This crisp, extra hoppy brew is hugely refreshing on a hot
         day, but will always deliver no matter when you choose to drink it.''',
     style = 'IPA',
+    brewery_id = 4,
     brewery = brewery4,
     user_id=1
 )
@@ -210,6 +220,7 @@ b4beer2 = Beer(
         that's evident in every sip. Join us in cheering this, the second stanza
         in our "Liquid Poem to the Glory of the Hop." ''',
     style = 'Double IPA',
+    brewery_id = 4,
     brewery = brewery4,
     user_id=1
 )
@@ -223,6 +234,7 @@ b4beer3 = Beer(
         IPA that delivers all the fruity, piney character of a much
         bigger IPA. ''',
     style = 'Session IPA',
+    brewery_id = 4,
     brewery = brewery4,
     user_id=1
 )
@@ -237,6 +249,7 @@ b5beer1 = Beer(
     name = 'IPA',
     description = 'A well-rounded, highly drinkable IPA. A bit of Caramel Malt barley provides the richness that mellows out the twang of the hops.',
     style = 'IPA',
+    brewery_id = 5,
     brewery = brewery5,
     user_id=1
 )
@@ -253,6 +266,7 @@ b5beer2 = Beer(
         moderate voice. Pale, cold, slightly alcoholic and bitter.
         It's all we know.''',
     style = 'Pale Ale',
+    brewery_id = 5,
     brewery = brewery5,
     user_id=1
 )
@@ -266,6 +280,7 @@ b5beer3 = Beer(
         Crisp and Easy to Slam, yet full of real flavor and all the things
         you yearn for.''',
     style = 'Pilsner',
+    brewery_id = 5,
     brewery = brewery5,
     user_id=1
 )

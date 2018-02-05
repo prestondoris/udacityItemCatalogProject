@@ -1,0 +1,19 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "nav.html" %}
+
+    <h3>Update the information for: {{ beer.name }}</h3>
+    <form method="POST" id="updateBeer" class="form">
+        <label for="name">Change Brewery Name:</label>
+        <input class="name" type="text" name="name">
+
+        <label for="style">Change Beer Style:</label>
+        <input class="name" type="text" name="style">
+
+        <label for="description">Change Beer Description:</label>
+        <textarea class="name" type="text" name="description"></textarea>
+
+        <input type="submit" value="Update" name="update">
+    </form>
+
+{% endblock %}

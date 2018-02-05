@@ -1,0 +1,19 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "nav.html" %}
+
+    <h3>Create a New Beer in the Database</h3>
+    <form method="POST">
+        <label for="name">Beer Name:</label>
+        <input type="text" class="name" name="name">
+
+        <label for="style">Beer Style:</label>
+        <input type="text" class="name" name="Style">
+
+        <label for="description">Beer Description:</label>
+        <textarea type="text" class="name" name="description"></textarea>
+
+        <input type="submit" value="Submit">
+    </form>
+
+{% endblock %}

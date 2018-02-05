@@ -1,0 +1,11 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "nav.html" %}
+
+    <h3>Would you like to delete {{ beer.name }} from the Database?</h3>
+    <form method="POST">
+        <input type="submit" value="Yes">
+    </form>
+    <a href="{{ url_for('beers', brewery_id=brewery.id) }}"><input type="submit" value="No" name="no"></a>
+
+{% endblock %}

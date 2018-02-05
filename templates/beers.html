@@ -1,0 +1,33 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "nav.html" %}
+
+    <h3>Beers Offerred by {{ brewery.name }}</h3>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li><strong>{{ message }}</strong></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    <section>
+        <a href="{{ url_for('create_beer', brewery_id=brewery.id) }}"><i class="far fa-plus-square"></i></a>
+    </section>
+
+    {% for beer in beers %}
+        <section>
+            <a href="#">
+                <article>
+                    {{ beer.name }}
+                </article>
+            </a>
+            <a href="{{ url_for('update_beer', brewery_id=brewery.id, beer_id=beer.id) }}"><i class="far fa-edit"></i></a>
+            <a href="{{ url_for('delete_beer', brewery_id=brewery.id, beer_id=beer.id) }}"><i class="far fa-trash-alt"></i></a>
+        </section>
+    {% endfor %}
+
+{% endblock %}
