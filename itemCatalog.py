@@ -129,7 +129,6 @@ def googleSignin():
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['name'])
     print "done!"
     return output
 
@@ -155,15 +154,11 @@ def googleLogout():
         del login_session['email']
         del login_session['picture']
 
-        response = make_response(json.dumps(
-            'Successfully discconnected'), 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash("You have successfully disconnected")
+        return redirect(url_for('breweries'))
     else:
-        response = make_response(json.dumps(
-            'Failed to revoke token for a given user.'), 400)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash("A 400 error occured. You are still logged in as %s") % login_session['name']
+        return redirect(url_for('breweries'))
 
 
 def createUser(login_session):
@@ -214,21 +209,43 @@ def update_breweries(brewery_id):
         Returns a rendered html template for updating and deleting a brewery
 
     """
-
+    brewery = session.query(Brewery).filter_by(id = brewery_id).one()
     if 'name' not in login_session:
-        return None
-    else:
-        brewery = session.query(Brewery).filter_by(id = brewery_id).one()
-        user = getUserInfo(brewery.user_id)
+        user = None
         return render_template('updateBrewery.html',
             brewery = brewery, user = user)
+    else:
+        creator = getUserInfo(brewery.user_id)
+        user = getUserID(login_session['email'])
+        if user == creator:
+            return render_template('updateBrewery.html',
+                brewery = brewery, user = user)
+        else:
+            # Need to finish this
+            return None
 
 
 @app.route('/breweries/create')
 def create_brewery():
-    return '''This is the page that allows a signed in user to create a new
-        brewery in the database. If a user who is not signed in wants to create
-        a new brewery they will be taken back to the login page.'''
+    """Route to create a new brewery
+
+    This is the page that allows a signed in user to create a new
+    brewery in the database. If a user who is not signed in wants to create
+    a new brewery they will be taken back to the login page.
+    Args:
+        None
+    Returns:
+        Returns a rendered html template for creating a new brewery
+
+    """
+    if 'name' not in login_session:
+        user = None
+        return render_template('create_brewery.html', user=user)
+    else:
+        user = getUserID(login_session['email'])
+        return render_template('create_brewery.html', user=user)
+
+
 
 @app.route('/breweries/beers')
 def beers():
