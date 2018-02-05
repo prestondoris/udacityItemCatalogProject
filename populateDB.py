@@ -38,11 +38,11 @@ for users in allUsers:
     session.commit()
 
 
-originalUser = Users(name='Preston Doris',
-    email = 'prestondoris@gmail.com',
-    picture='https://lh4.googleusercontent.com/-Hs9d2xbVGlA/AAAAAAAAAAI/AAAAAAAAAFw/CO3e-KX2o5Y/photo.jpg')
-session.add(originalUser)
-session.commit()
+#originalUser = Users(name='Preston Doris',
+#    email = 'prestondoris@gmail.com',
+#    picture='https://lh4.googleusercontent.com/-Hs9d2xbVGlA/AAAAAAAAAAI/AAAAAAAAAFw/CO3e-KX2o5Y/photo.jpg')
+#session.add(originalUser)
+#session.commit()
 
 
 # Add Breweries to the DB

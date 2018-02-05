@@ -13,17 +13,19 @@
     {% endwith %}
 
     <section>
-        <a href="{{ url_for('create_brewery', user = user) }}"><i class="far fa-plus-square"></i></a>
+        <a href="{{ url_for('create_brewery', user=user) }}"><i class="far fa-plus-square"></i></a>
     </section>
 
-    {% for i in brewery %}
+    {% for brewery in brewery %}
     <section>
         <a href="#">
             <article>
-                {{ i.name }}
+                {{ brewery.name }}
             </article>
         </a>
+        <a href="{{ url_for('update_breweries', brewery_id = brewery.id, brewery=brewery, user=user) }}"><i class="far fa-edit"></i></a>
     </section>
+
     {% endfor %}
 
 {% endblock %}

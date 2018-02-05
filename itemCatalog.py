@@ -192,7 +192,7 @@ def breweries():
         return render_template('breweries.html', brewery = brewery, user = user)
 
 
-@app.route('/breweries/<int:brewery_id>/update')
+@app.route('/breweries/update/<int:brewery_id>')
 def update_breweries(brewery_id):
     """Route to update a brewery.
 
@@ -211,18 +211,19 @@ def update_breweries(brewery_id):
     """
     brewery = session.query(Brewery).filter_by(id = brewery_id).one()
     if 'name' not in login_session:
-        user = None
-        return render_template('updateBrewery.html',
-            brewery = brewery, user = user)
+        flash('''You cannot update this brewery because you are not the
+            creator. Only the person who created a Brewery can delete it.''')
+        return redirect(url_for('breweries'))
     else:
         creator = getUserInfo(brewery.user_id)
-        user = getUserID(login_session['email'])
-        if user == creator:
+        user = getUserInfo(getUserID(login_session['email']))
+        if user.id == creator.id:
             return render_template('updateBrewery.html',
                 brewery = brewery, user = user)
         else:
-            # Need to finish this
-            return None
+            flash('''You cannot update this brewery because you are not the
+                creator. Only the person who created a Brewery can delete it.''')
+            return redirect(url_for('breweries'))
 
 
 @app.route('/breweries/create')
@@ -242,7 +243,7 @@ def create_brewery():
         user = None
         return render_template('create_brewery.html', user=user)
     else:
-        user = getUserID(login_session['email'])
+        user = getUserInfo(getUserID(login_session['email']))
         return render_template('create_brewery.html', user=user)
 
 
