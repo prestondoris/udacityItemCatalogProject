@@ -13,7 +13,7 @@
     {% endwith %}
 
     <section>
-        <a href="{{ url_for('create_brewery', user=user) }}"><i class="far fa-plus-square"></i></a>
+        <a href="{{ url_for('create_brewery') }}"><i class="far fa-plus-square"></i></a>
     </section>
 
     {% for brewery in brewery %}
@@ -23,7 +23,8 @@
                 {{ brewery.name }}
             </article>
         </a>
-        <a href="{{ url_for('update_breweries', brewery_id = brewery.id, brewery=brewery, user=user) }}"><i class="far fa-edit"></i></a>
+        <a href="{{ url_for('update_brewery', brewery_id = brewery.id) }}"><i class="far fa-edit"></i></a>
+        <a href="{{ url_for('delete_brewery', brewery_id = brewery.id) }}"><i class="far fa-trash-alt"></i></a>
     </section>
 
     {% endfor %}

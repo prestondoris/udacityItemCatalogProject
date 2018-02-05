@@ -157,7 +157,7 @@ def googleLogout():
         flash("You have successfully disconnected")
         return redirect(url_for('breweries'))
     else:
-        flash("A 400 error occured. You are still logged in as %s") % login_session['name']
+        flash("A 400 error occured. You are still logged in")
         return redirect(url_for('breweries'))
 
 
@@ -192,8 +192,8 @@ def breweries():
         return render_template('breweries.html', brewery = brewery, user = user)
 
 
-@app.route('/breweries/update/<int:brewery_id>')
-def update_breweries(brewery_id):
+@app.route('/breweries/update/<int:brewery_id>', methods = ['GET', 'POST'])
+def update_brewery(brewery_id):
     """Route to update a brewery.
 
     This is the page that allows a signed in user that created the
@@ -206,27 +206,62 @@ def update_breweries(brewery_id):
         id: The id of the brewery
 
     Returns:
-        Returns a rendered html template for updating and deleting a brewery
+        GET Requests:
+            Returns a rendered html template for updating and deleting a
+            brewery
+        POST Requests:
 
     """
     brewery = session.query(Brewery).filter_by(id = brewery_id).one()
     if 'name' not in login_session:
         flash('''You cannot update this brewery because you are not the
+            creator. Only the person who created a Brewery can update it.''')
+        return redirect(url_for('breweries'))
+    else:
+        creator = getUserInfo(brewery.user_id)
+        user = getUserInfo(getUserID(login_session['email']))
+        if user.id == creator.id:
+            if request.method == 'POST':
+                brewery.name = request.form['name']
+                session.add(brewery)
+                session.commit()
+                flash('%s was successfully updated!' % brewery.name)
+                return redirect(url_for('breweries'))
+            else:
+                return render_template('updateBrewery.html',
+                    brewery = brewery, user = user)
+        else:
+            flash('''You cannot update this brewery because you are not the
+                creator. Only the person who created a Brewery can update it.''')
+            return redirect(url_for('breweries'))
+
+
+@app.route('/breweries/delete/<int:brewery_id>', methods = ['GET','POST'])
+def delete_brewery(brewery_id):
+    brewery = session.query(Brewery).filter_by(id = brewery_id).one()
+    if 'name' not in login_session:
+        flash('''You cannot delete this brewery because you are not the
             creator. Only the person who created a Brewery can delete it.''')
         return redirect(url_for('breweries'))
     else:
         creator = getUserInfo(brewery.user_id)
         user = getUserInfo(getUserID(login_session['email']))
         if user.id == creator.id:
-            return render_template('updateBrewery.html',
-                brewery = brewery, user = user)
+            if request.method == 'POST':
+                session.delete(brewery)
+                flash('%s was successfully deleted!' % brewery.name)
+                session.commit()
+                return redirect(url_for('breweries'))
+            else:
+                return render_template('delete_brewery.html',
+                    brewery = brewery, user = user)
         else:
-            flash('''You cannot update this brewery because you are not the
+            flash('''You cannot delete this brewery because you are not the
                 creator. Only the person who created a Brewery can delete it.''')
             return redirect(url_for('breweries'))
 
 
-@app.route('/breweries/create')
+@app.route('/breweries/create', methods = ['GET', 'POST'])
 def create_brewery():
     """Route to create a new brewery
 
@@ -244,7 +279,14 @@ def create_brewery():
         return render_template('create_brewery.html', user=user)
     else:
         user = getUserInfo(getUserID(login_session['email']))
-        return render_template('create_brewery.html', user=user)
+        if request.method == 'POST':
+            newBrewery = Brewery(name=request.form['name'], user_id=user.id)
+            session.add(newBrewery)
+            session.commit()
+            flash("Thank you for creating a new brewery!!")
+            return redirect(url_for('breweries'))
+        else:
+            return render_template('create_brewery.html', user=user)
 
 
 

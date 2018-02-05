@@ -1,6 +1,24 @@
 /*
-This is the function that is called when the user authorizes Google sign in
-and the authResult is the object that contains the one time use code and an
-access token.
+$('#update').submit(function(event){
+    event.preventDefault()
+    var $form = $(this);
+    var $name = $form.find('input[name=name]').val();
+    var $url = $form.att('action')
+    var data = {
+        name: $name
+    }
+    $.ajex({
+        type: "post",
+        url: $url,
+        data: data,
+        dataType: json,
+        contentType: 'application/json',
+        success: function(result) {
+            console.log("POST request sent");
+        }
+        error: fucntion(result) {
+            console.log("POST request failed");
+        }
+    })
+});
 */
-console.log("connected to script.js");

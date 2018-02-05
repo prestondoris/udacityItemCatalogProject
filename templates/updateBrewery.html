@@ -3,12 +3,10 @@
 {% include "nav.html" %}
 
     <h3>Update the information for: {{ brewery.name }}</h3>
-    <form>
+    <form method="POST" action="{{ url_for('update_brewery', brewery_id=brewery.id) }}" id="updateBrewer" class="form">
+        <label for="name">Change Brewery Name:</label>
         <input class="name" type="text" name="name">
-        <input type="submit" value="Update">
-    </form>
-    <form>
-        <input type="submit" value="Delete">
+        <input type="submit" value="Update" name="update">
     </form>
 
 {% endblock %}
