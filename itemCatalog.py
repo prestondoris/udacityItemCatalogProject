@@ -195,7 +195,7 @@ def breweries():
 
     if 'name' not in login_session:
         user = None
-        return render_template('breweries.html', brewery = brewery, user = user)
+        return render_template('breweries.html', brewery = brewery, recent=recent, user = user)
     else:
         user = getUserInfo(getUserID(login_session['email']))
         return render_template('breweries.html', brewery = brewery, recent=recent, user = user)
