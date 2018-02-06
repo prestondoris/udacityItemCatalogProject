@@ -318,7 +318,7 @@ def beers(brewery_id):
     print beers
     if 'name' not in login_session:
         user = None
-        return render_template('beers.html', beers = beers, user = user)
+        return render_template('beers.html', brewery = brewery, beers = beers, user = user)
     else:
         user = getUserInfo(getUserID(login_session['email']))
         return render_template('beers.html', brewery = brewery, beers = beers, user = user)
@@ -341,7 +341,13 @@ def update_beer(brewery_id, beer_id):
         user = getUserInfo(getUserID(login_session['email']))
         if user.id == creator.id:
             if request.method == 'POST':
-                return None
+                if request.form.get('name'):
+                    beer.name = request.form.get('name')
+                if request.form.get('style'):
+                    beer.style = request.form.get('style')
+                if request.form.get('description'):
+                    beer.description = request.form.get('description')
+                return redirect(url_for('beers', brewery_id=brewery.id))
             else:
                 return render_template('update_beer.html',
                     brewery = brewery, beer=beer, user = user)
@@ -351,7 +357,7 @@ def update_beer(brewery_id, beer_id):
             return redirect(url_for('breweries'))
 
 
-@app.route('/breweries/<int:brewery_id>/beers/<int:beer_id>/delete')
+@app.route('/breweries/<int:brewery_id>/beers/<int:beer_id>/delete', methods=['GET', 'POST'])
 def delete_beer(brewery_id, beer_id):
     brewery = session.query(Brewery).filter_by(id = brewery_id).one()
     beer = session.query(Beer).filter_by(id = beer_id).one()
@@ -362,7 +368,9 @@ def delete_beer(brewery_id, beer_id):
         user = getUserInfo(getUserID(login_session['email']))
         if user.id == creator.id:
             if request.method == 'POST':
-                return None
+                session.delete(beer)
+                session.commit()
+                return redirect(url_for('beers', brewery_id=brewery.id))
             else:
                 return render_template('delete_beer.html',
                     brewery = brewery, beer=beer, user = user)
@@ -372,7 +380,7 @@ def delete_beer(brewery_id, beer_id):
             return redirect(url_for('breweries'))
 
 
-@app.route('/breweries/<int:brewery_id>/beers/create')
+@app.route('/breweries/<int:brewery_id>/beers/create', methods =['GET', 'POST'])
 def create_beer(brewery_id):
     # This is the page that allows a signed in user to create a new
     #    beer in the database. If a user who is not signed in wants to create
@@ -383,9 +391,18 @@ def create_beer(brewery_id):
     else:
         user = getUserInfo(getUserID(login_session['email']))
         if request.method == 'POST':
-            return None
+            newBeer = Beer(name=request.form.get('name'),
+                style = request.form.get('style'),
+                description = request.form.get('description'),
+                user_id = user.id,
+                brewery_id = brewery.id)
+            session.add(newBeer)
+            session.commit()
+            flash("Thank you for creating a new beer!")
+            return redirect(url_for('beers', brewery_id=brewery.id))
         else:
-            return render_template('create_beer.html', brewery=brewery, user=user)
+            return render_template('create_beer.html',
+                brewery=brewery, user=user)
 
 
 

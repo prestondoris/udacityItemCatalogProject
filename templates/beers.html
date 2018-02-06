@@ -19,12 +19,18 @@
     </section>
 
     {% for beer in beers %}
-        <section>
-            <a href="#">
-                <article>
+        <section class="container">
+            <article class="beer">
+                <p>
                     {{ beer.name }}
-                </article>
-            </a>
+                </p>
+                <p>
+                    {{ beer.style }}
+                </p>
+                <p>
+                    {{ beer.description }}
+                </p>
+            </article>
             <a href="{{ url_for('update_beer', brewery_id=brewery.id, beer_id=beer.id) }}"><i class="far fa-edit"></i></a>
             <a href="{{ url_for('delete_beer', brewery_id=brewery.id, beer_id=beer.id) }}"><i class="far fa-trash-alt"></i></a>
         </section>

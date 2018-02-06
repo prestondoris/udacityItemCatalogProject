@@ -3,15 +3,15 @@
 {% include "nav.html" %}
 
     <h3>Create a New Beer in the Database</h3>
-    <form method="POST">
+    <form method="POST" action="{{ url_for('create_beer', brewery_id=brewery.id) }}">
         <label for="name">Beer Name:</label>
         <input type="text" class="name" name="name">
 
         <label for="style">Beer Style:</label>
-        <input type="text" class="name" name="Style">
+        <input type="text" class="style" name="style">
 
         <label for="description">Beer Description:</label>
-        <textarea type="text" class="name" name="description"></textarea>
+        <textarea type="text" class="description" name="description"></textarea>
 
         <input type="submit" value="Submit">
     </form>
