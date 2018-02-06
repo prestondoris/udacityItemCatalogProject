@@ -1,10 +1,18 @@
-<nav class="nav">
-    <a href="{{ url_for('breweries') }}">Brewery Catalog</a>
-    {% if user is none %}
-        <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i></a>
-    {% else %}
-        <span>{{ user.name }}</span>
-        <img src="{{ user.picture }}" style="width: 100px; height: 100px; border-radius: 50%"></img>
-        <a href="{{ url_for('googleLogout') }}"><i class="fas fa-sign-out-alt"></i></a>
-    {% endif %}
+<nav class="container" id="navBar">
+    <section class="nav">
+        <h1 class="home"><a href="{{ url_for('breweries') }}">Brewery Catalog</a></h1>
+
+        {% if user is none %}
+        <a class="login" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i></a>
+
+        {% else %}
+        <div class="user">
+            <div>
+                <p class="userName"> {{ user.name }}</p>
+                <img class="userImg"src="{{ user.picture }}"></img>
+            </div>
+            <a class="logout" href="{{ url_for('googleLogout') }}"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+        {% endif %}
+    </section>
 </nav>

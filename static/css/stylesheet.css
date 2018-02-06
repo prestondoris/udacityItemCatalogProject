@@ -1,4 +1,105 @@
 body {
-    font-family: 'Julius Sans One', sans-serif;
-    /*font-family: 'Special Elite', cursive;*/
+    /*font-family: 'Julius Sans One', sans-serif;*/
+    font-family: 'Special Elite', cursive;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:visited {
+    color: black;
+}
+
+.container {
+    width: 100%;
+}
+
+.home {
+    /*font-family:'Julius Sans One', sans-serif;*/
+    padding: 24px;
+    color: black;
+    width: 50%;
+    margin: 0;
+    display: inline-block;
+    font-size: 1.5rem
+}
+
+#navBar {
+    height: 4.5em;
+    box-shadow: 0px 0px 3px #cccccc;
+    background: #00c6ff;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.nav {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.login, .logout {
+    text-decoration: none;
+    color: black;
+    float: right;
+    font-size: 1.5rem;
+    padding: 22px 12px;
+    margin: 0;
+    display: inline-block;
+}
+
+.user {
+    float: right;
+    display: inline-block;
+    widht: 25%;
+}
+
+.user div {
+    float: left;
+}
+
+.userImg {
+    width: 2.5em;
+    height: 2.5em;
+    border-radius: 50%;
+    padding: 1em .5em;
+    display: inline-block;
+}
+
+.userName {
+    margin-top: -2.5em;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.flashMessages {
+    width: 50%;
+    margin: 0 auto;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px #cccccc;
+    height: 4em;
+}
+
+.flashList {
+    list-style-type: none;
+    text-align: center;
+}
+
+.mainContainer {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.aside {
+    width: 25%;
+    float: left;
+}
+
+.recent {
+    width: 75%;
+    float: right;
 }

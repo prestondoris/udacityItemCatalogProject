@@ -4,29 +4,44 @@
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li><strong>{{ message }}</strong></li>
-            {% endfor %}
-        </ul>
+        <article class="flashMessages">
+            <ul class="flashList">
+                {% for message in messages %}
+                    <li><strong>{{ message }}</strong></li>
+                {% endfor %}
+            </ul>
+        </article>
+
     {% endif %}
     {% endwith %}
+    <section class="mainContainer">
+        <div>
+            <a href="{{ url_for('create_brewery') }}"><i class="far fa-plus-square"></i></a>
+        </div>
+        <aside class="aside">
+            {% for brewery in brewery %}
+            <section class="">
+                <a href="{{ url_for('beers', brewery_id = brewery.id) }}">
+                    <article>
+                        {{ brewery.name }}
+                    </article>
+                </a>
+                <a href="{{ url_for('update_brewery', brewery_id = brewery.id) }}"><i class="far fa-edit"></i></a>
+                <a href="{{ url_for('delete_brewery', brewery_id = brewery.id) }}"><i class="far fa-trash-alt"></i></a>
+            </section>
 
-    <section>
-        <a href="{{ url_for('create_brewery') }}"><i class="far fa-plus-square"></i></a>
+            {% endfor %}
+        </aside>
+        <section class="recent">
+            {% for item in recent %}
+            <section>
+                <article>
+                    <p>{{ item.name }} ( <em>{{ item.brewery.name }}</em> )</p>
+                </article>
+            </section>
+            {% endfor %}
+        </section>
     </section>
 
-    {% for brewery in brewery %}
-    <section>
-        <a href="{{ url_for('beers', brewery_id = brewery.id) }}">
-            <article>
-                {{ brewery.name }}
-            </article>
-        </a>
-        <a href="{{ url_for('update_brewery', brewery_id = brewery.id) }}"><i class="far fa-edit"></i></a>
-        <a href="{{ url_for('delete_brewery', brewery_id = brewery.id) }}"><i class="far fa-trash-alt"></i></a>
-    </section>
-
-    {% endfor %}
 
 {% endblock %}

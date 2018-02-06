@@ -184,12 +184,21 @@ def getUserID(email):
 @app.route('/breweries')
 def breweries():
     brewery = session.query(Brewery).all()
+    recent = session.query(Beer).all()
+    recent.reverse()
+    for i in recent:
+        counter = len(recent);
+        if counter > 4:
+            recent = recent[:-1]
+        else:
+            break
+
     if 'name' not in login_session:
         user = None
         return render_template('breweries.html', brewery = brewery, user = user)
     else:
         user = getUserInfo(getUserID(login_session['email']))
-        return render_template('breweries.html', brewery = brewery, user = user)
+        return render_template('breweries.html', brewery = brewery, recent=recent, user = user)
 
 
 @app.route('/breweries/update/<int:brewery_id>', methods = ['GET', 'POST'])
