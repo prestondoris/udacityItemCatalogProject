@@ -405,6 +405,13 @@ def create_beer(brewery_id):
                 brewery=brewery, user=user)
 
 
+@app.route('/api/breweries/')
+def breweriesJSON():
+    if 'name' not in login_session:
+        return redirect(url_for('login'))
+    else:
+        items = session.query(Beer).all()
+        return jsonify(Catalog=[i.serialize for i in items])
 
 def runApp():
     app.secret_key = 'super_secret_key'

@@ -39,7 +39,7 @@ class Brewery(Base):
 
     # method for API endpoint
     @property
-    def serialize():
+    def serialize(self):
         return {
             'name': self.name,
             'id': self.id
@@ -62,10 +62,11 @@ class Beer(Base):
 
     # method for API endpoint
     @property
-    def serialize():
+    def serialize(self):
         return {
+            'brewery': self.brewery.serialize,
             'name': self.name,
-            'id': self.name,
+            'id': self.id,
             'style': self.style,
             'description': self.description
         }
