@@ -125,19 +125,28 @@ def googleSignin():
     output += '<h1>Welcome, '
     output += login_session['name']
     output += '!</h1>'
-    output += login_session['picture']
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    print "done!"
+    output +='<p>We are redirecting you, please wait.'
     return output
 
 
 @app.route('/glogout')
 def googleLogout():
+    # Logout from Google
+    #
+    # This function will disconnect the user from the current session.
+    #
+    # Args:
+    #   None
+    #
+    # Returns:
+    #   If Successfull - redirect to breweries.html with flash message to
+    #   to notify the user their were logged out.
+    #
+    #   If Unsuccessfull - redirect to breweries.html with flask message to
+    #   to notify the user they were not logged out.
+
     # Only disconnect a connected user
     access_token = login_session['access_token']
-    print access_token
     if access_token is None:
         response = make_response(json.dumps(
             'Current user not connected'), 401)
@@ -154,7 +163,7 @@ def googleLogout():
         del login_session['email']
         del login_session['picture']
 
-        flash("You have successfully disconnected")
+        flash("You have successfully logged out")
         return redirect(url_for('breweries'))
     else:
         flash("A 400 error occured. You are still logged in")
@@ -162,6 +171,16 @@ def googleLogout():
 
 
 def createUser(login_session):
+    # Method for adding a new user to the DB
+    #
+    # Args:
+    #   login_session - this is a list that contains all of login
+    #   information of the logged in user.
+    #
+    # Returns:
+    #   User.id - this is the DB generated id once the user has been added to
+    #   the DB.
+
     newUser = Users(name=login_session['name'], email=login_session[
                    'email'], picture=login_session['picture'])
     session.add(newUser)
@@ -170,10 +189,28 @@ def createUser(login_session):
     return user.id
 
 def getUserInfo(user_id):
+    # Method for securing all of a users information from the DB
+    #
+    # Args:
+    #   user_id - this is used to filter through the DB to return the single
+    #   desired user.
+    #
+    # Returns:
+    #   user - this is a list that contains all of the users information.
+    
     user = session.query(Users).filter_by(id=user_id).one()
     return user
 
 def getUserID(email):
+    # Method for securing a specific users id from the DB
+    #
+    # Args:
+    #   email - this is used to filter through the DB to return the single
+    #   desired user via their email.
+    #
+    # Returns:
+    #   user.id - this is the id of the specific user
+
     try:
         user = session.query(Users).filter_by(email=email).one()
         return user.id
@@ -195,10 +232,12 @@ def breweries():
 
     if 'name' not in login_session:
         user = None
-        return render_template('breweries.html', breweries = breweries, recent=recent, user = user)
+        return render_template('breweries.html', breweries = breweries,
+                               recent=recent, user = user)
     else:
         user = getUserInfo(getUserID(login_session['email']))
-        return render_template('breweries.html', breweries = breweries, recent=recent, user = user)
+        return render_template('breweries.html', breweries = breweries,
+                               recent=recent, user = user)
 
 
 @app.route('/breweries/update/<int:brewery_id>', methods = ['GET', 'POST'])
