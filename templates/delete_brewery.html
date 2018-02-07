@@ -2,10 +2,16 @@
 {% block content %}
 {% include "nav.html" %}
 
-    <h3>Would you like to delete {{ brewery.name }} from the Database?</h3>
-    <form method="POST">
-        <input type="submit" value="Yes">
-    </form>
-    <a href="{{ url_for('breweries') }}"><input type="submit" value="No" name="no"></a>
+    <section class="mainContainer">
+        <section class="formContainer">
+            <h3>Would you like to delete {{ brewery.name }} from the Database?</h3>
+            <form method="POST">
+                <input class="submitButton" type="submit" value="Yes">
+            </form>
+            <a class="noButton" href="{{ url_for('breweries') }}">
+                <input class="submitButton" type="submit" value="No" name="no">
+            </a>
+        </section>
+    </section>
 
 {% endblock %}

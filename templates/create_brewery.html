@@ -2,11 +2,17 @@
 {% block content %}
 {% include "nav.html" %}
 
-    <h3>Create a New Brewery in the Database</h3>
-    <form method="POST">
-        <label for="name">Brewery Name:</label>
-        <input type="text" class="name" name="name">
-        <input type="submit" value="Submit">
-    </form>
+    <section class="mainContainer">
+        <section class="formContainer">
+            <h3>Create a New Brewery in the Database</h3>
+            <form method="POST">
+                <div>
+                    <label for="name">Brewery Name:</label>
+                    <input class="input" type="text" name="name">
+                </div>
+                <input class="submitButton" type="submit" value="Submit">
+            </form>
+        </section>
+    </section>
 
 {% endblock %}

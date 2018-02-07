@@ -2,18 +2,29 @@
 {% block content %}
 {% include "nav.html" %}
 
-    <h3>Update the information for: {{ beer.name }}</h3>
-    <form method="POST" action="{{ url_for('update_beer', brewery_id=brewery.id, beer_id = beer.id) }}" id="updateBeer" class="form">
-        <label for="name">Change Beer Name:</label>
-        <input class="name" type="text" name="name">
+<section class="mainContainer">
+    <section class="formContainer">
+        <h3>Update the information for: {{ beer.name }}</h3>
+        <form method="POST" action="{{ url_for('update_beer', brewery_id=brewery.id, beer_id = beer.id) }}" id="updateBeer" class="form">
+            <div>
+                <label for="name">Change Beer Name:</label>
+                <input class="input" type="text" name="name" placeholder="{{ beer.name }}">
+            </div>
 
-        <label for="style">Change Beer Style:</label>
-        <input class="style" type="text" name="style">
+            <div>
+                <label for="style">Change Beer Style:</label>
+                <input class="input" type="text" name="style" placeholder="{{ beer.style }}">
+            </div>
 
-        <label for="description">Change Beer Description:</label>
-        <textarea class="description" type="text" name="description"></textarea>
+            <div>
+                <label for="description">Change Beer Description:</label>
+                <textarea class="inputArea" rows="10" type="text" name="description"></textarea>
+            </div>
 
-        <input type="submit" value="Update" name="update">
-    </form>
+            <input class="submitButton" type="submit" value="Update" name="update">
+        </form>
+    </section>
+</section>
+
 
 {% endblock %}

@@ -2,18 +2,28 @@
 {% block content %}
 {% include "nav.html" %}
 
-    <h3>Create a New Beer in the Database</h3>
-    <form method="POST" action="{{ url_for('create_beer', brewery_id=brewery.id) }}">
-        <label for="name">Beer Name:</label>
-        <input type="text" class="name" name="name">
+    <section class="mainContainer">
+        <section class="formContainer">
+            <h3>Create a New Beer in the Database</h3>
+            <form method="POST" action="{{ url_for('create_beer', brewery_id=brewery.id) }}">
+                <div>
+                    <label for="name">Beer Name:</label>
+                    <input class="input" type="text" name="name">
+                </div>
 
-        <label for="style">Beer Style:</label>
-        <input type="text" class="style" name="style">
+                <div>
+                    <label for="style">Beer Style:</label>
+                    <input class="input" type="text" name="style">
+                </div>
 
-        <label for="description">Beer Description:</label>
-        <textarea type="text" class="description" name="description"></textarea>
+                <div>
+                    <label for="description">Beer Description:</label>
+                    <textarea rows="10" class="inputArea" type="text" name="description"></textarea>
+                </div>
 
-        <input type="submit" value="Submit">
-    </form>
+                <input class="submitButton" type="submit" value="Submit">
+            </form>
+        </section>
+    </section>
 
 {% endblock %}

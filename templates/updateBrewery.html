@@ -2,11 +2,17 @@
 {% block content %}
 {% include "nav.html" %}
 
-    <h3>Update the information for: {{ brewery.name }}</h3>
-    <form method="POST" action="{{ url_for('update_brewery', brewery_id=brewery.id) }}" id="updateBrewer" class="form">
-        <label for="name">Change Brewery Name:</label>
-        <input class="name" type="text" name="name">
-        <input type="submit" value="Update" name="update">
-    </form>
+    <section class="mainContainer">
+        <section class="formContainer">
+            <h3>Update the information for: {{ brewery.name }}</h3>
+            <form method="POST" action="{{ url_for('update_brewery', brewery_id=brewery.id) }}" id="updateBrewer" class="form">
+                <div>
+                    <label for="name">Change Brewery Name:</label>
+                    <input class="input" type="text" name="name" placeholder=" {{ brewery.name}}">
+                </div>
+                <input class="submitButton" type="submit" value="Update" name="update">
+            </form>
+        </section>
+    </section>
 
 {% endblock %}
