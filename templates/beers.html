@@ -26,9 +26,9 @@
                 {% for beer in beers %}
                 <section class="beer">
                     <article class="beerInfo">
-                        <p class="name">{{ beer.name }}</p>
-                        <p class="style">{{ beer.style }}</p>
-                        <p class="description">{{ beer.description }}</p>
+                        <p class="info name"> {{ beer.name }}</p>
+                        <p class="info style">Beer Style: <br>{{ beer.style }}</p>
+                        <p class="info description"> Beer Desription:<br>{{ beer.description }}</p>
                     </article>
                     <div class="update">
                         <a class="edit" href="{{ url_for('update_beer', brewery_id=brewery.id, beer_id=beer.id) }}">
@@ -43,4 +43,14 @@
             </section>
         </section>
 
+        <script>
+
+        var $beerInfo = $('.beerInfo');
+
+        $beerInfo.click(function() {
+            $(this).children('.description').toggleClass('active');
+            $(this).children('.style').toggleClass('active')
+        });
+
+        </script>
 {% endblock %}
