@@ -1,0 +1,19 @@
+<aside class="aside">
+    {% for brewery in breweries %}
+    <section class="brewery">
+        <a class="breweryName" href="{{ url_for('beers', brewery_id = brewery.id) }}">
+            <article>
+                {{ brewery.name }}
+            </article>
+        </a>
+        <div class="update">
+            <a class="edit"href="{{ url_for('update_brewery', brewery_id = brewery.id) }}">
+                <i class="far fa-edit"></i>
+            </a>
+            <a class="delete"href="{{ url_for('delete_brewery', brewery_id = brewery.id) }}">
+                <i class="far fa-trash-alt"></i>
+            </a>
+        </div>
+    </section>
+    {% endfor %}
+</aside>

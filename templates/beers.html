@@ -2,8 +2,6 @@
 {% block content %}
 {% include "nav.html" %}
 
-    <h3>Beers Offerred by {{ brewery.name }}</h3>
-
     {% with messages = get_flashed_messages() %}
     {% if messages %}
         <ul>
@@ -14,26 +12,35 @@
     {% endif %}
     {% endwith %}
 
-    <section>
-        <a href="{{ url_for('create_beer', brewery_id=brewery.id) }}"><i class="far fa-plus-square"></i></a>
-    </section>
+        <section class="mainContainer">
+            {% include "aside.html" %}
 
-    {% for beer in beers %}
-        <section class="container">
-            <article class="beer">
-                <p>
-                    {{ beer.name }}
-                </p>
-                <p>
-                    {{ beer.style }}
-                </p>
-                <p>
-                    {{ beer.description }}
-                </p>
-            </article>
-            <a href="{{ url_for('update_beer', brewery_id=brewery.id, beer_id=beer.id) }}"><i class="far fa-edit"></i></a>
-            <a href="{{ url_for('delete_beer', brewery_id=brewery.id, beer_id=beer.id) }}"><i class="far fa-trash-alt"></i></a>
+            <section class="beersContainer">
+                <h3>Beers Offerred by {{ brewery.name }}</h3>
+                <div class="create" id='beerCreate'>
+                    <a href="{{ url_for('create_beer', brewery_id=brewery.id) }}">
+                        <i class="far fa-plus-square"></i>
+                        <span>Create a New Beer</span>
+                    </a>
+                </div>
+                {% for beer in beers %}
+                <section class="beer">
+                    <article class="beerInfo">
+                        <p class="name">{{ beer.name }}</p>
+                        <p class="style">{{ beer.style }}</p>
+                        <p class="description">{{ beer.description }}</p>
+                    </article>
+                    <div class="update">
+                        <a class="edit" href="{{ url_for('update_beer', brewery_id=brewery.id, beer_id=beer.id) }}">
+                            <i class="far fa-edit"></i>
+                        </a>
+                        <a class="delete" href="{{ url_for('delete_beer', brewery_id=brewery.id, beer_id=beer.id) }}">
+                            <i class="far fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </section>
+                {% endfor %}
+            </section>
         </section>
-    {% endfor %}
 
 {% endblock %}

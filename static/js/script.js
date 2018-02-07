@@ -22,3 +22,9 @@ $('#update').submit(function(event){
     })
 });
 */
+console.log("connected") 
+var $beerInfo = $(.beerInfo);
+
+$(.beerInfo).click(function() {
+    this.addClass('active');
+});

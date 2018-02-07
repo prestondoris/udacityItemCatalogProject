@@ -183,7 +183,7 @@ def getUserID(email):
 @app.route('/')
 @app.route('/breweries')
 def breweries():
-    brewery = session.query(Brewery).all()
+    breweries = session.query(Brewery).all()
     recent = session.query(Beer).all()
     recent.reverse()
     for i in recent:
@@ -195,10 +195,10 @@ def breweries():
 
     if 'name' not in login_session:
         user = None
-        return render_template('breweries.html', brewery = brewery, recent=recent, user = user)
+        return render_template('breweries.html', breweries = breweries, recent=recent, user = user)
     else:
         user = getUserInfo(getUserID(login_session['email']))
-        return render_template('breweries.html', brewery = brewery, recent=recent, user = user)
+        return render_template('breweries.html', breweries = breweries, recent=recent, user = user)
 
 
 @app.route('/breweries/update/<int:brewery_id>', methods = ['GET', 'POST'])
@@ -322,15 +322,18 @@ def create_brewery():
 def beers(brewery_id):
     # Route to display all beers in the database for a given brewery.
     #
+    breweries = session.query(Brewery).all()
     brewery = session.query(Brewery).filter_by(id = brewery_id).one()
     beers = session.query(Beer).filter_by(brewery_id = brewery.id).all()
     print beers
     if 'name' not in login_session:
         user = None
-        return render_template('beers.html', brewery = brewery, beers = beers, user = user)
+        return render_template('beers.html', breweries=breweries,
+            brewery = brewery, beers = beers, user = user)
     else:
         user = getUserInfo(getUserID(login_session['email']))
-        return render_template('beers.html', brewery = brewery, beers = beers, user = user)
+        return render_template('beers.html', breweries=breweries,
+            brewery = brewery, beers = beers, user = user)
 
 
 @app.route('/breweries/<int:brewery_id>/beers/<int:beer_id>/update', methods = ['GET', 'POST'])
