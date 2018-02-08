@@ -269,9 +269,7 @@ def update_brewery(brewery_id):
 
     brewery = session.query(Brewery).filter_by(id=brewery_id).one()
     if 'name' not in login_session:
-        flash('''You cannot update this brewery because you are not the
-            creator. Only the person who created a Brewery can update it.''')
-        return redirect(url_for('breweries'))
+        return redirect(url_for('login'))
     else:
         creator = getUserInfo(brewery.user_id)
         user = getUserInfo(getUserID(login_session['email']))
@@ -402,7 +400,7 @@ def update_beer(brewery_id, beer_id):
     if 'name' not in login_session:
         return redirect(url_for('login'))
     else:
-        creator = getUserInfo(brewery.user_id)
+        creator = getUserInfo(beer.user_id)
         user = getUserInfo(getUserID(login_session['email']))
         if user.id == creator.id:
             if request.method == 'POST':
@@ -412,15 +410,17 @@ def update_beer(brewery_id, beer_id):
                     beer.style = request.form.get('style')
                 if request.form.get('description'):
                     beer.description = request.form.get('description')
-                return redirect(url_for('beers', brewery_id=brewery.id))
+                return redirect(url_for('beers', brewery_id=brewery.id,
+                                        beer_id=beer.id))
             else:
                 return render_template('update_beer.html',
                                        brewery=brewery, beer=beer, user=user)
         else:
-            flash('''You cannot update this brewery because you are not the
-                  creator. Only the person who created a Brewery can
+            flash('''You cannot update this beer because you are not the
+                  creator. Only the person who created a beer can
                   update it.''')
-            return redirect(url_for('beer'))
+            return redirect(url_for('beers', brewery_id=brewery.id,
+                                    beer_id=beer.id))
 
 
 @app.route('/breweries/<int:brewery_id>/beers/<int:beer_id>/delete',
@@ -476,6 +476,7 @@ def create_beer(brewery_id):
         return redirect(url_for('login'))
     else:
         user = getUserInfo(getUserID(login_session['email']))
+        print user.id
         if request.method == 'POST':
             newBeer = Beer(name=request.form.get('name'),
                            style=request.form.get('style'),
