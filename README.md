@@ -8,7 +8,7 @@ An application that provides a list of beers within a variety of breweries as we
 To run and view this app you'll need:
 1. Install Vagrant and Virtual Box
 2. Clone the [fullstack-nanodegree-vm](https://github.com/udacity/fullstack-nanodegree-vm) repo
-3. Clone the [projectItemCatalog](https://github.com/prestondoris/udacityItemCatalogProject) repo into the vagrant directory
+3. Clone the [udacityItemCatalogProject](https://github.com/prestondoris/udacityItemCatalogProject) repo into the vagrant directory
 4. Run the following command line prompts
 
 ```
@@ -17,7 +17,7 @@ vagrant up
 # Connect to the VM
 vagrant ssh
 # Change to the projectItemCatalog directory in the VM
-cd /vagrant/projectItemCatalog
+cd /vagrant/udacityItemCatalogProject
 # Run the server
 python itemCatalog.py
 ```
