@@ -36,7 +36,7 @@ class Brewery(Base):
     name = Column(String(80), nullable = False)
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship(Users)
-    beer = relationship(Beer, cascade='all, delete_orphan')
+    beer = relationship('Beer', cascade='all, delete-orphan')
 
     # method for API endpoint
     @property

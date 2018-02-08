@@ -310,9 +310,7 @@ def delete_brewery(brewery_id):
 
     brewery = session.query(Brewery).filter_by(id=brewery_id).one()
     if 'name' not in login_session:
-        flash('''You cannot delete this brewery because you are not the
-              creator. Only the person who created a Brewery can delete it.''')
-        return redirect(url_for('breweries'))
+        return redirect(url_for('login'))
     else:
         creator = getUserInfo(brewery.user_id)
         user = getUserInfo(getUserID(login_session['email']))
@@ -410,8 +408,7 @@ def update_beer(brewery_id, beer_id):
                     beer.style = request.form.get('style')
                 if request.form.get('description'):
                     beer.description = request.form.get('description')
-                return redirect(url_for('beers', brewery_id=brewery.id,
-                                        beer_id=beer.id))
+                return redirect(url_for('beers', brewery_id=brewery.id))
             else:
                 return render_template('update_beer.html',
                                        brewery=brewery, beer=beer, user=user)
@@ -456,7 +453,8 @@ def delete_beer(brewery_id, beer_id):
             flash('''You cannot delete this beer because you are not the
                   creator. Only the person who created a Beer can
                   delete it.''')
-            return redirect(url_for('beers'))
+            return redirect(url_for('beers', brewery_id=brewery.id,
+                                    beer_id=beer.id))
 
 
 @app.route('/breweries/<int:brewery_id>/beers/create', methods=['GET', 'POST'])
